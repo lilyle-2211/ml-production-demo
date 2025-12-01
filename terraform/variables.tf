@@ -34,16 +34,3 @@ variable "github_repo" {
   type        = string
   default     = "churn-demo"
 }
-
-
-variable "github_org" {
-  description = "GitHub organization or username"
-  type        = string
-  default     = "lilyle-2211"
-}
-
-variable "github_repo" {
-  description = "GitHub repository name"
-  type        = string
-  default     = "churn-demo"
-}
