@@ -9,7 +9,5 @@ wheels/
 # Virtual environments
 .venv
 
-# Pipeline artifacts
-*_pipeline.json
-
-setup.md
+# Terraform
+terraform/.tflint.hcl
