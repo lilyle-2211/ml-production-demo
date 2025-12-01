@@ -1,15 +1,13 @@
-
-
 [project]
 name = "churn-demo"
 version = "0.1.0"
 description = "Predict Churn"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 dependencies = [
   "google-cloud-bigquery",
   "pandas",
-  "numpy",
+  "numpy<2",
   "xgboost",
   "optuna",
   "scikit-learn",
@@ -18,6 +16,7 @@ dependencies = [
   "db-dtypes",
   "kfp",
   "google-cloud-aiplatform",
+  "torch>=2.2,<2.3",
 ]
 
 [project.optional-dependencies]
@@ -47,3 +46,8 @@ exclude = '''
 profile = "black"
 line_length = 100
 skip_glob = [".venv/*", "__pycache__/*", ".terraform/*"]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.3.0",
+]

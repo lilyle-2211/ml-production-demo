@@ -1,0 +1,22 @@
+# GPU-enabled Docker image for PyTorch training
+# Uses pre-built base image with common ML dependencies
+ARG BASE_IMAGE=us-central1-docker.pkg.dev/lily-demo-ml/ml-docker-repo/pytorch-base-gpu:latest
+FROM ${BASE_IMAGE}
+
+# Copy project files
+COPY pyproject.toml ./
+COPY trainer/ ./trainer/
+COPY eda/ ./eda/
+
+# Install only project-specific dependencies (base image has torch, kfp, bigquery, etc.)
+# This will be fast since common packages are already installed
+RUN uv pip install --system .
+
+# Set Python path
+ENV PYTHONPATH=/app:/app/trainer:/app/eda
+
+# Set working directory
+WORKDIR /app
+
+# Default command runs PyTorch trainer
+CMD ["python", "eda/pytorch_trainer.py"]
