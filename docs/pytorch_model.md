@@ -203,29 +203,6 @@ From the latest training run:
 - **Training Time**: ~50 epochs
 - **Data Size**: 190,979 records (138k train, 18k val, 34k test)
 
----
-
-## **Scalability Considerations**
-
-### **Current Approach (Small Data)**
-```python
-# Load all data into memory, scale with sklearn
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X_train)
-```
-- ✅ Works for < 1M rows
-- ❌ Out of memory for 100M+ rows
-
-### **Recommended for 100M Rows**
-```python
-# Pre-scale with Spark, save to BigQuery
-# Runtime: Just load and convert to tensors
-X = np.vstack(df['scaled_features'].values)
-X_tensor = torch.FloatTensor(X)
-```
-- ✅ Scale once offline with Spark
-- ✅ Fast runtime (no scaling overhead)
-- ✅ Memory efficient (load in batches)
 
 ---
 
