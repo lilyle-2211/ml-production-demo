@@ -54,15 +54,11 @@ build-base-gpu:
 	@echo "Image: $(BASE_GPU_IMAGE)"
 	@echo "Version: $(VERSION)"
 	@echo ""
-	@echo "⚠️  This will take 15-20 minutes on first build"
-	@echo "⚠️  Subsequent builds of pytorch-trainer will be fast (~2-3 min)"
-	@echo ""
 	gcloud builds submit \
 		--config docker/cloudbuild.base-gpu.yaml \
 		--project $(PROJECT_ID) \
 		--substitutions=_VERSION=$(VERSION),_REPOSITORY=$(REPOSITORY)
-	@echo "✅ Base GPU image built and pushed with tags: latest, $(VERSION)"
-	@echo "✅ You can now run 'make build-gpu' to build project-specific images quickly"
+	@echo "Base GPU image built and pushed with tags: latest, $(VERSION)"
 
 build-gpu:
 	@echo "Building PyTorch GPU Docker image: $(PYTORCH_GPU_IMAGE)"
@@ -71,7 +67,7 @@ build-gpu:
 		--config docker/cloudbuild.gpu.yaml \
 		--project $(PROJECT_ID) \
 		--substitutions=_VERSION=$(VERSION)
-	@echo "✅ PyTorch GPU image built and pushed with tags: latest, $(VERSION)"
+	@echo "PyTorch GPU image built and pushed with tags: latest, $(VERSION)"
 
 deploy-gpu:
 	@echo "Deploying PyTorch GPU training to Vertex AI..."
@@ -83,7 +79,7 @@ deploy-gpu:
 		--epochs=100 \
 		--batch-size=512 \
 		--learning-rate=0.001
-	@echo "✅ PyTorch GPU pipeline deployed to Vertex AI"
+	@echo "PyTorch GPU pipeline deployed to Vertex AI"
 
 clean:
 	@echo "Cleaning up temporary files..."
@@ -91,4 +87,4 @@ clean:
 	rm -f eda/churn_model.pt
 	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 	find . -type f -name "*.pyc" -delete
-	@echo "✅ Cleanup complete"
+	@echo "Cleanup complete"
