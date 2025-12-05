@@ -44,11 +44,11 @@ jobs:
       - name: Build and push Docker image
         run: |
           docker build -f docker/Dockerfile.inference \
-            -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/ml-models/churn-inference:latest \
-            -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/ml-models/churn-inference:${{ github.sha }} \
+            -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/churn-pipeline/churn-inference:latest \
+            -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/churn-pipeline/churn-inference:${{ github.sha }} \
             .
-          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/ml-models/churn-inference:latest
-          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/ml-models/churn-inference:${{ github.sha }}
+          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/churn-pipeline/churn-inference:latest
+          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/churn-pipeline/churn-inference:${{ github.sha }}
 
       - name: Install kubectl and Helm
         run: |
@@ -77,4 +77,4 @@ jobs:
           echo "Inference service deployed successfully!"
           echo "Service IP: $SERVICE_IP"
           echo "Swagger UI: http://$SERVICE_IP/docs"
-          echo "Image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/ml-models/churn-inference:${{ github.sha }}"
+          echo "Image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/churn-pipeline/churn-inference:${{ github.sha }}"
