@@ -27,9 +27,6 @@ terraform/
 *.tfstate.*
 .terraform/
 
-# Pipeline directory (not needed in container)
-pipeline/
-
 # Documentation
 README.md
 
