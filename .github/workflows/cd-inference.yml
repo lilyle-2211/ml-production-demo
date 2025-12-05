@@ -42,6 +42,10 @@ jobs:
       - name: Install Helm
         run: curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
+      - name: Configure gcloud
+        run: |
+          gcloud config unset auth/impersonate_service_account
+
       - name: Configure kubectl
         run: |
           gcloud components install kubectl gke-gcloud-auth-plugin --quiet

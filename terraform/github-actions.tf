@@ -18,6 +18,7 @@ module "github_actions" {
     "roles/cloudbuild.builds.builder",
     "roles/serviceusage.serviceUsageConsumer",
     "roles/iam.serviceAccountUser",
+    "roles/container.developer",
   ]
 
   depends_on = [google_project_service.required_apis]
