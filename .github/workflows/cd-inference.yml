@@ -9,6 +9,7 @@ on:
       - 'docker/Dockerfile.inference'
       - 'helm/**'
       - 'pyproject.toml'
+      - '.github/workflows/cd-inference.yml'
   workflow_dispatch:  # Allow manual trigger
 
 env:

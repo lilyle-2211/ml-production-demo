@@ -9,6 +9,8 @@ on:
       - 'pipeline/**'
       - 'docker/Dockerfile.trainer'
       - 'pyproject.toml'
+      - 'Makefile'
+      - '.github/workflows/cd-trainer.yml'
 
 env:
   PROJECT_ID: lily-demo-ml

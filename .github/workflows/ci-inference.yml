@@ -2,13 +2,14 @@ name: CI - Inference
 
 on:
   push:
-    branches-ignore:
+    branches:
       - dev
     paths:
       - 'inference/**'
       - 'tests/test_inference_api.py'
       - 'docker/Dockerfile.inference'
       - 'pyproject.toml'
+      - '.github/workflows/ci-inference.yml'
   pull_request:
     branches: [ main ]
     paths:
@@ -16,6 +17,7 @@ on:
       - 'tests/test_inference_api.py'
       - 'docker/Dockerfile.inference'
       - 'pyproject.toml'
+      - '.github/workflows/ci-inference.yml'
 
 jobs:
   test:
