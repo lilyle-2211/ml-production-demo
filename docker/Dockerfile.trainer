@@ -5,6 +5,7 @@ WORKDIR /app
 # Copy project files needed for installation
 COPY pyproject.toml ./
 COPY trainer/ ./trainer/
+COPY pipeline/ ./pipeline/
 
 # Install dependencies
 RUN pip install uv && uv pip install --system .
