@@ -33,6 +33,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install uv
+        run: pip install uv
+
       - name: Create virtual environment
         run: uv venv
 
@@ -45,11 +48,9 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Install uv
-        run: pip install uv
-
       - name: Build and Deploy
         run: |
+          source .venv/bin/activate
           make build
           make deploy
         env:

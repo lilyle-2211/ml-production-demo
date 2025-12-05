@@ -35,17 +35,14 @@ jobs:
     - name: Set up Python
       run: uv python install 3.12
 
-    - name: Create virtual environment
+    - name: Create and activate virtual environment
       run: uv venv
 
     - name: Install dependencies
       run: uv pip install -e '.[dev,inference]'
 
     - name: Run inference API tests
-      run: |
-        uv run pytest tests/test_inference_api.py -v --tb=short
+      run: uv run pytest tests/test_inference_api.py -v --tb=short
 
     - name: Check coverage
-      run: |
-        uv run pytest tests/test_inference_api.py \
-          --cov=inference --cov-report=term-missing
+      run: uv run pytest tests/test_inference_api.py --cov=inference --cov-report=term-missing
