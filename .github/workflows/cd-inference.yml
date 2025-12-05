@@ -1,4 +1,4 @@
-name: Deploy Inference
+name: Deploy Inference to GKE
 
 on:
   push:
