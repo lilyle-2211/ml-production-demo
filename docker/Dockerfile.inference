@@ -1,0 +1,19 @@
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+
+WORKDIR /app
+
+# Copy dependency installation
+COPY pyproject.toml ./
+
+# Install dependencies
+RUN uv pip install --system --no-cache ".[inference]"
+
+# Copy application files
+COPY inference/main.py .
+COPY inference/schemas.py .
+COPY inference/utils.py .
+COPY inference/config.yaml .
+
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

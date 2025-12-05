@@ -1,0 +1,22 @@
+artifact_path: file:///Users/lilyle/Documents/ml-production-demo/trainer/mlruns/954011377355680173/models/m-7e7416903d754ec1bc4810bf47b1fd82/artifacts
+flavors:
+  python_function:
+    data: model.ubj
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.xgboost
+    python_version: 3.12.8
+  xgboost:
+    code: null
+    data: model.ubj
+    model_class: xgboost.core.Booster
+    model_format: ubj
+    xgb_version: 3.1.0
+mlflow_version: 3.7.0
+model_id: m-7e7416903d754ec1bc4810bf47b1fd82
+model_size_bytes: 316805
+model_uuid: m-7e7416903d754ec1bc4810bf47b1fd82
+prompts: null
+run_id: 2583ca8e43074b2080696173d2e8e725
+utc_time_created: '2025-12-05 17:34:51.070783'

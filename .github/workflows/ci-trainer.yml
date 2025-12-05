@@ -1,0 +1,46 @@
+name: CI - Trainer
+
+on:
+  push:
+    branches-ignore:
+      - main
+    paths:
+      - 'trainer/**'
+      - 'tests/test_data_splitting.py'
+      - 'tests/test_evaluation.py'
+      - 'pyproject.toml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'trainer/**'
+      - 'tests/test_data_splitting.py'
+      - 'tests/test_evaluation.py'
+      - 'pyproject.toml'
+
+jobs:
+  test:
+    name: Test Trainer
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+      with:
+        version: "latest"
+
+    - name: Set up Python
+      run: uv python install 3.12
+
+    - name: Install dependencies
+      run: uv pip install -e '.[dev]'
+
+    - name: Run trainer tests
+      run: |
+        uv run pytest tests/test_data_splitting.py tests/test_evaluation.py -v --tb=short
+
+    - name: Check coverage
+      run: |
+        uv run pytest tests/test_data_splitting.py tests/test_evaluation.py \
+          --cov=trainer --cov-report=term-missing

@@ -1,0 +1,154 @@
+name: Train and Deploy with GCS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GCP_REGION: us-central1
+  GCS_BUCKET: ${{ secrets.GCS_BUCKET }}  # e.g., my-project-ml-models
+  MODEL_NAME: churn-prediction-model
+
+jobs:
+  train-and-upload:
+    name: Train Model and Upload to GCS
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    outputs:
+      gcs_model_path: ${{ steps.upload.outputs.gcs_path }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install uv
+          uv pip install --system google-cloud-bigquery pandas numpy xgboost \
+            optuna scikit-learn pyyaml pydantic mlflow google-cloud-storage
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Train model
+        run: |
+          echo "Training model..."
+          python trainer/main.py
+        env:
+          MLFLOW_TRACKING_URI: file://$(pwd)/trainer/mlruns
+
+      - name: Upload model to GCS
+        id: upload
+        run: |
+          echo "Uploading model to GCS..."
+
+          # Generate version tag (git SHA + timestamp)
+          VERSION_TAG="${GITHUB_SHA:0:7}-$(date +%Y%m%d-%H%M%S)"
+          echo "Version tag: $VERSION_TAG"
+
+          # Upload to GCS
+          python scripts/upload_model_to_gcs.py \
+            --model-name ${{ env.MODEL_NAME }} \
+            --stage Production \
+            --bucket ${{ env.GCS_BUCKET }} \
+            --prefix models \
+            --version-tag $VERSION_TAG
+
+          # Set output
+          GCS_PATH="gs://${{ env.GCS_BUCKET }}/models/${{ env.MODEL_NAME }}-Production-${VERSION_TAG}"
+          echo "gcs_path=${GCS_PATH}" >> $GITHUB_OUTPUT
+          echo "Model uploaded to: ${GCS_PATH}"
+
+      - name: Save model path
+        run: |
+          echo "${{ steps.upload.outputs.gcs_path }}" > model_path.txt
+
+      - name: Upload model path as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: model-path
+          path: model_path.txt
+
+  deploy-api:
+    name: Deploy API to Cloud Run
+    needs: train-and-upload
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download model path
+        uses: actions/download-artifact@v3
+        with:
+          name: model-path
+
+      - name: Read model path
+        id: model_path
+        run: |
+          GCS_PATH=$(cat model_path.txt)
+          echo "gcs_path=${GCS_PATH}" >> $GITHUB_OUTPUT
+          echo "Using model from: ${GCS_PATH}"
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Build and push Docker image
+        run: |
+          cd inference/fastapi-inference
+
+          # Build image
+          gcloud builds submit \
+            --tag gcr.io/${{ env.GCP_PROJECT_ID }}/churn-api:${{ github.sha }} \
+            --tag gcr.io/${{ env.GCP_PROJECT_ID }}/churn-api:latest
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy churn-api \
+            --image gcr.io/${{ env.GCP_PROJECT_ID }}/churn-api:${{ github.sha }} \
+            --platform managed \
+            --region ${{ env.GCP_REGION }} \
+            --allow-unauthenticated \
+            --set-env-vars "MODEL_GCS_PATH=${{ steps.model_path.outputs.gcs_path }}" \
+            --set-env-vars "GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }}" \
+            --memory 2Gi \
+            --cpu 2 \
+            --timeout 300
+
+      - name: Get service URL
+        run: |
+          SERVICE_URL=$(gcloud run services describe churn-api \
+            --region ${{ env.GCP_REGION }} \
+            --format 'value(status.url)')
+
+          echo "🚀 API deployed successfully!"
+          echo "   URL: ${SERVICE_URL}"
+          echo "   Model: ${{ steps.model_path.outputs.gcs_path }}"
+
+          # Test health endpoint
+          curl -f ${SERVICE_URL}/health || echo "Health check failed"

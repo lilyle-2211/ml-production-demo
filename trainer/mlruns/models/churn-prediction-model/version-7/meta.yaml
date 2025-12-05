@@ -1,0 +1,15 @@
+creation_timestamp: 1764957064249
+current_stage: None
+deployment_job_state: null
+description: null
+last_updated_timestamp: 1764957064249
+model_id: m-22a7d1916a3a468290eb70e3086b7e5f
+name: churn-prediction-model
+run_id: b8a1d2a594024bfab08b0e1347d86325
+run_link: null
+source: models:/m-22a7d1916a3a468290eb70e3086b7e5f
+status: READY
+status_message: null
+storage_location: file:///Users/lilyle/Documents/ml-production-demo/trainer/mlruns/954011377355680173/models/m-22a7d1916a3a468290eb70e3086b7e5f/artifacts
+user_id: null
+version: 7

@@ -1,0 +1,46 @@
+name: CI - Inference
+
+on:
+  push:
+    branches-ignore:
+      - main
+    paths:
+      - 'inference/**'
+      - 'tests/test_inference_api.py'
+      - 'docker/Dockerfile.inference'
+      - 'pyproject.toml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'inference/**'
+      - 'tests/test_inference_api.py'
+      - 'docker/Dockerfile.inference'
+      - 'pyproject.toml'
+
+jobs:
+  test:
+    name: Test Inference API
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+      with:
+        version: "latest"
+
+    - name: Set up Python
+      run: uv python install 3.12
+
+    - name: Install dependencies
+      run: uv pip install -e '.[dev,inference]'
+
+    - name: Run inference API tests
+      run: |
+        uv run pytest tests/test_inference_api.py -v --tb=short
+
+    - name: Check coverage
+      run: |
+        uv run pytest tests/test_inference_api.py \
+          --cov=inference --cov-report=term-missing

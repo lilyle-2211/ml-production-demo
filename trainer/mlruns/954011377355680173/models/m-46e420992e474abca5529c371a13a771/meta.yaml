@@ -1,0 +1,10 @@
+artifact_location: file:///Users/lilyle/Documents/ml-production-demo/trainer/mlruns/954011377355680173/models/m-46e420992e474abca5529c371a13a771/artifacts
+creation_timestamp: 1764956958034
+experiment_id: '954011377355680173'
+last_updated_timestamp: 1764956962685
+model_id: m-46e420992e474abca5529c371a13a771
+model_type: null
+name: model
+source_run_id: 940ba09181504e5ebc82a4e1f54372d3
+status: 2
+status_message: null

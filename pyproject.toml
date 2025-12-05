@@ -5,30 +5,51 @@ description = "Predict Churn"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+  "pyyaml",
+  "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+# Training dependencies
+training = [
   "google-cloud-bigquery",
   "pandas",
   "numpy<2",
   "xgboost",
   "optuna",
   "scikit-learn",
-  "pyyaml",
-  "pydantic>=2.0",
   "db-dtypes",
-  "kfp",
-  "google-cloud-aiplatform",
+  "mlflow>=3.7.0",
   "torch>=2.2,<2.3",
+  "google-cloud-storage",
 ]
 
-[project.optional-dependencies]
+# Inference/API dependencies
+inference = [
+  "fastapi>=0.104.0",
+  "uvicorn[standard]>=0.24.0",
+  "mlflow>=3.7.0",
+  "google-cloud-storage",
+  "pandas",
+  "numpy<2",
+  "xgboost",
+]
+
+# Deployment dependencies
+deploy = [
+  "kfp",
+  "google-cloud-aiplatform",
+  "google-cloud-storage",
+]
+
+# Development dependencies
 dev = [
   "pytest>=7.0",
   "pytest-cov>=4.0",
   "pre-commit",
-  "joblib"
+  "joblib",
+  "requests>=2.31.0",
 ]
-
-[tool.setuptools.packages.find]
-where = ["trainer"]
 
 [tool.black]
 line-length = 100

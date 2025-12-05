@@ -34,3 +34,49 @@ variable "github_repo" {
   type        = string
   default     = "churn-demo"
 }
+
+# ============================================================================
+# GKE Variables
+# ============================================================================
+
+variable "gke_cluster_name" {
+  description = "Name of the GKE cluster"
+  type        = string
+  default     = "ml-cluster"
+}
+
+variable "gke_zone" {
+  description = "Zone for the GKE cluster"
+  type        = string
+  default     = "us-central1-a"
+}
+
+variable "gke_enable_autopilot" {
+  description = "Enable GKE Autopilot mode (true) or Standard mode (false)"
+  type        = bool
+  default     = false
+}
+
+variable "gke_machine_type" {
+  description = "Machine type for GKE nodes (standard mode only)"
+  type        = string
+  default     = "n1-standard-2"
+}
+
+variable "gke_initial_node_count" {
+  description = "Initial number of nodes per zone (standard mode only)"
+  type        = number
+  default     = 2
+}
+
+variable "gke_min_nodes" {
+  description = "Minimum number of nodes for autoscaling (standard mode only)"
+  type        = number
+  default     = 1
+}
+
+variable "gke_max_nodes" {
+  description = "Maximum number of nodes for autoscaling (standard mode only)"
+  type        = number
+  default     = 3
+}

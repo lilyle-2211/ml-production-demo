@@ -1,0 +1,14 @@
+artifact_uri: file:///Users/lilyle/Documents/ml-production-demo/trainer/mlruns/954011377355680173/ff5cdff858a842f99a5cb2262cf794a2/artifacts
+end_time: 1764957454333
+entry_point_name: ''
+experiment_id: '954011377355680173'
+lifecycle_stage: active
+run_id: ff5cdff858a842f99a5cb2262cf794a2
+run_name: xgboost_churn_prediction
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1764957422355
+status: 4
+tags: []
+user_id: lilyle

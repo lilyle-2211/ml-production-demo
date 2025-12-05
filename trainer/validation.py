@@ -15,6 +15,13 @@ class BigQueryConfig(BaseModel):
     table_name: str = Field(description="Full BigQuery table name with backticks")
 
 
+class GCSConfig(BaseModel):
+    """GCS storage configuration."""
+
+    bucket_name: str = Field(description="GCS bucket name for model storage")
+    model_path: str = Field(description="Path to model in GCS bucket")
+
+
 class DataConfig(BaseModel):
     """Data splitting configuration."""
 
@@ -72,6 +79,7 @@ class Config(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     bigquery: BigQueryConfig
+    gcs: GCSConfig
     data: DataConfig
     model: ModelConfig
     features: FeaturesConfig

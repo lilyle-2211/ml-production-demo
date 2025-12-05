@@ -5,6 +5,11 @@ bigquery:
   project_id: lily-demo-ml
   table_name: "`lily-demo-ml.churn.agg_input_table`"
 
+# GCS model storage
+gcs:
+  bucket_name: lily-ml-models-20251205
+  model_path: models/churn-prediction-model
+
 # Data split parameters
 data:
   test_frac: 0.20
