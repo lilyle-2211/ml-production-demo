@@ -26,7 +26,7 @@ build:
 	gcloud builds submit --config docker/cloudbuild-trainer.yaml --project $(PROJECT_ID)
 
 deploy:
-	uv run python pipeline/deploy.py --project-id=$(PROJECT_ID) --region=$(REGION)
+	uv run --extra deploy python pipeline/deploy.py --project-id=$(PROJECT_ID) --region=$(REGION)
 
 push-inference:
 	gcloud auth configure-docker $(REGION)-docker.pkg.dev --quiet
