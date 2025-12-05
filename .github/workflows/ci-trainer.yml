@@ -3,7 +3,7 @@ name: CI - Trainer
 on:
   push:
     branches-ignore:
-      - main
+      - dev
     paths:
       - 'trainer/**'
       - 'tests/test_data_splitting.py'

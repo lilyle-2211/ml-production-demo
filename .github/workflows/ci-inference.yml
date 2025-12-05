@@ -3,7 +3,7 @@ name: CI - Inference
 on:
   push:
     branches-ignore:
-      - main
+      - dev
     paths:
       - 'inference/**'
       - 'tests/test_inference_api.py'
