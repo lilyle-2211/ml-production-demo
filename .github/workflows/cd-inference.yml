@@ -39,31 +39,24 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Configure Docker
-        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
-
-      - name: Build and push Docker image
-        run: |
-          docker build -f docker/Dockerfile.inference \
-            -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/churn-pipeline/churn-inference:latest \
-            -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/churn-pipeline/churn-inference:${{ github.sha }} \
-            .
-          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/churn-pipeline/churn-inference:latest
-          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/churn-pipeline/churn-inference:${{ github.sha }}
-
-      - name: Install kubectl and Helm
-        run: |
-          gcloud components install kubectl gke-gcloud-auth-plugin --quiet
-          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+      - name: Install Helm
+        run: curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
       - name: Configure kubectl
         run: |
+          gcloud components install kubectl gke-gcloud-auth-plugin --quiet
           gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} \
             --zone=${{ env.GKE_ZONE }} \
             --project=${{ env.PROJECT_ID }}
 
+      - name: Build and push Docker image
+        run: make push-inference
+        env:
+          PROJECT_ID: ${{ env.PROJECT_ID }}
+          REGION: ${{ env.REGION }}
+
       - name: Deploy with Helm
-        run: helm upgrade churn-inference ./helm --install --wait --timeout=5m
+        run: make helm-upgrade
 
       - name: Wait for rollout
         run: kubectl rollout status deployment/churn-inference --timeout=5m
@@ -78,4 +71,3 @@ jobs:
           echo "Inference service deployed successfully!"
           echo "Service IP: $SERVICE_IP"
           echo "Swagger UI: http://$SERVICE_IP/docs"
-          echo "Image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/churn-pipeline/churn-inference:${{ github.sha }}"

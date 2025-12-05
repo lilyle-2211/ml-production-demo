@@ -34,7 +34,7 @@ push-inference:
 	docker push $(INFERENCE_IMAGE)
 
 helm-upgrade:
-	helm upgrade churn-inference ./helm
+	helm upgrade churn-inference ./helm --install --wait --timeout=5m
 
 test-local:
 	PYTHONPATH=. uv run --with pytest --with fastapi --with httpx --with xgboost --with pyyaml --with google-cloud-storage --with pandas \
