@@ -58,6 +58,7 @@ resource "google_project_iam_member" "github_actions_permissions" {
     "roles/cloudbuild.builds.builder",
     "roles/serviceusage.serviceUsageConsumer",
     "roles/iam.serviceAccountUser",
+    "roles/iam.serviceAccountTokenCreator",
   ])
 
   project = var.project_id
