@@ -2,7 +2,7 @@
 
 PROJECT_ID := lily-demo-ml
 REGION := us-central1
-INFERENCE_IMAGE := $(REGION)-docker.pkg.dev/$(PROJECT_ID)/ml-models/churn-inference:latest
+INFERENCE_IMAGE := $(REGION)-docker.pkg.dev/$(PROJECT_ID)/churn-pipeline/churn-inference:latest
 
 help:
 	@echo "Training:"
