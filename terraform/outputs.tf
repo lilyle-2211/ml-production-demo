@@ -21,23 +21,17 @@ output "region" {
 # GitHub Actions Workload Identity outputs
 output "github_actions_service_account" {
   description = "GitHub Actions service account email"
-  value       = google_service_account.github_actions.email
+  value       = module.github_actions.service_account_email
 }
 
 output "workload_identity_provider" {
   description = "Workload Identity Provider name for GitHub secrets"
-  value       = google_iam_workload_identity_pool_provider.github_provider.name
+  value       = module.github_actions.workload_identity_provider
 }
 
 output "github_secrets_instructions" {
   description = "Instructions for setting up GitHub secrets"
-  value       = <<-EOT
-    Add these secrets to your GitHub repository:
-
-    GCP_PROJECT_ID: ${var.project_id}
-    GCP_WORKLOAD_IDENTITY_PROVIDER: ${google_iam_workload_identity_pool_provider.github_provider.name}
-    GCP_SERVICE_ACCOUNT: ${google_service_account.github_actions.email}
-  EOT
+  value       = module.github_actions.github_secrets_instructions
 }
 
 # GKE outputs

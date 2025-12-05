@@ -10,15 +10,18 @@ on:
       - 'docker/Dockerfile.inference'
       - 'pyproject.toml'
       - '.github/workflows/ci-inference.yml'
+
   pull_request:
-    branches: [ main ]
-  workflow_dispatch:  # Allow manual trigger
+    branches:
+      - main
     paths:
       - 'inference/**'
       - 'tests/test_inference_api.py'
       - 'docker/Dockerfile.inference'
       - 'pyproject.toml'
       - '.github/workflows/ci-inference.yml'
+
+  workflow_dispatch:  # manual trigger enabled
 
 jobs:
   test:
@@ -40,7 +43,7 @@ jobs:
       run: uv venv
 
     - name: Install dependencies
-      run: uv pip install -e '.[dev,inference]'
+      run: uv pip install -e ".[dev,inference]"
 
     - name: Run inference API tests
       run: uv run pytest tests/test_inference_api.py -v --tb=short
