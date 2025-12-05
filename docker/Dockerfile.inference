@@ -2,11 +2,12 @@ FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 
 WORKDIR /app
 
-# Copy dependency installation
+# Copy dependency files
 COPY pyproject.toml ./
+COPY inference/__init__.py ./inference/
 
-# Install dependencies
-RUN uv pip install --system --no-cache ".[inference]"
+# Install dependencies only (not the package itself)
+RUN uv pip install --system --no-cache fastapi uvicorn pydantic google-cloud-storage pyyaml joblib scikit-learn
 
 # Copy application files
 COPY inference/main.py .
