@@ -77,8 +77,8 @@ profile = "black"
 line_length = 100
 skip_glob = [".venv/*", "__pycache__/*", ".terraform/*"]
 
-[tool.setuptools]
-packages = ["trainer", "pipeline", "inference"]
+[tool.setuptools.packages.find]
+where = ["."]
 
 [dependency-groups]
 dev = [
