@@ -11,6 +11,7 @@ on:
       - 'pyproject.toml'
       - 'Makefile'
       - '.github/workflows/cd-trainer.yml'
+  workflow_dispatch:  # Allow manual trigger
 
 env:
   PROJECT_ID: lily-demo-ml

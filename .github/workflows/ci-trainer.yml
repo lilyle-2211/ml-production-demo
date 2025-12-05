@@ -12,6 +12,7 @@ on:
       - '.github/workflows/ci-trainer.yml'
   pull_request:
     branches: [ main ]
+  workflow_dispatch:  # Allow manual trigger
     paths:
       - 'trainer/**'
       - 'tests/test_data_splitting.py'

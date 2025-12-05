@@ -12,6 +12,7 @@ on:
       - '.github/workflows/ci-inference.yml'
   pull_request:
     branches: [ main ]
+  workflow_dispatch:  # Allow manual trigger
     paths:
       - 'inference/**'
       - 'tests/test_inference_api.py'
