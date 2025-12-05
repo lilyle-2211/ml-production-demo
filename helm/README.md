@@ -6,7 +6,9 @@ The churn prediction inference service is deployed to GKE using Helm for simplif
 
 ## Prerequisites
 
-- GKE cluster: `ml-cluster` (us-central1-a)
+- **GKE cluster**: `fastapi-cluster` (us-central1-a)
+- **Artifact Registry**: `churn-pipeline` (us-central1)
+- **Cloud Storage**: `lily-demo-ml-pipeline`
 - kubectl configured with cluster access
 - Helm 3.x installed
 - Docker image pushed to Artifact Registry

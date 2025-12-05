@@ -1,16 +1,16 @@
 # GKE Cluster (Standard Mode)
 resource "google_container_cluster" "ml_cluster" {
-  name     = var.gke_cluster_name
-  location = var.gke_zone
+  project               = var.project_id
+  name                  = "fastapi-cluster"
+  location              = var.gke_cluster_location
+  remove_default_node_pool = true
+  initial_node_count    = 1
+  deletion_protection = false
 
   # Workload Identity for pod authentication to GCP services
   workload_identity_config {
     workload_pool = "${var.project_id}.svc.id.goog"
   }
-
-  # Standard mode node pool configuration
-  initial_node_count       = 1
-  remove_default_node_pool = true
 
   # Network configuration
   network    = "default"

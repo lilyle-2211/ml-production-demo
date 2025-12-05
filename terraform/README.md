@@ -50,9 +50,9 @@ terraform apply
 - **GCS Bucket**: Pipeline artifacts storage
 
 ### GKE Cluster (gke.tf)
-- **Cluster**: Standard mode GKE cluster (ml-cluster)
-- **Node Pool**: 2-node pool with autoscaling (1-3 nodes)
-- **Service Account**: Inference workload SA with GCS access
+- **Cluster**: Standard mode GKE cluster (fastapi-cluster)
+- **Node Pool**: `ml-node-pool` with autoscaling (1-3 nodes)
+- **Service Accounts**: Inference workload SA with GCS access
 - **Workload Identity**: Secure pod authentication to GCP
 
 ### IAM (iam.tf)
@@ -139,14 +139,11 @@ terraform apply
 
 ## Importing Existing Resources
 
-If resources were created manually (like the current GKE cluster):
+To import existing resources into Terraform state, use the following commands:
 
 ```bash
-# Import GKE cluster
-terraform import google_container_cluster.ml_cluster lily-demo-ml/us-central1-a/ml-cluster
-
-# Import service account
-terraform import google_service_account.inference_sa projects/lily-demo-ml/serviceAccounts/churn-inference@lily-demo-ml.iam.gserviceaccount.com
+terraform import google_container_cluster.ml_cluster lily-demo-ml/us-central1-a/fastapi-cluster
+terraform import google_container_node_pool.ml_nodes lily-demo-ml/us-central1-a/fastapi-cluster/ml-node-pool
 ```
 
 ## Troubleshooting

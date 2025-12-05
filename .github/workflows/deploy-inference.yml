@@ -1,4 +1,4 @@
-name: CD - Inference to GKE
+name: Deploy Inference
 
 on:
   push:

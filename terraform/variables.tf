@@ -40,9 +40,15 @@ variable "github_repo" {
 # ============================================================================
 
 variable "gke_cluster_name" {
-  description = "Name of the GKE cluster"
+  description = "GKE cluster name"
   type        = string
-  default     = "ml-cluster"
+  default     = "fastapi-cluster"
+}
+
+variable "gke_cluster_location" {
+  description = "Location for the GKE cluster"
+  type        = string
+  default     = "us-central1-a"
 }
 
 variable "gke_zone" {
