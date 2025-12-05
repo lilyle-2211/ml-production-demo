@@ -9,6 +9,7 @@ on:
       - 'tests/test_data_splitting.py'
       - 'tests/test_evaluation.py'
       - 'pyproject.toml'
+      - '.github/workflows/ci-trainer.yml'
   pull_request:
     branches: [ main ]
     paths:
@@ -16,6 +17,7 @@ on:
       - 'tests/test_data_splitting.py'
       - 'tests/test_evaluation.py'
       - 'pyproject.toml'
+      - '.github/workflows/ci-trainer.yml'
 
 jobs:
   test:
