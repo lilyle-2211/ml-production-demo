@@ -2,7 +2,7 @@ name: CI - Trainer
 
 on:
   push:
-    branches-ignore:
+    branches:
       - dev
     paths:
       - 'trainer/**'
