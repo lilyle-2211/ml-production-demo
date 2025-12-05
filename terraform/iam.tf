@@ -113,14 +113,3 @@ resource "google_project_iam_member" "aiplatform_sa_storage_object_viewer" {
   role    = "roles/storage.objectViewer"
   member  = "serviceAccount:service-${var.project_number}@gcp-sa-aiplatform.iam.gserviceaccount.com"
 }
-
-# ============================================================================
-# GitHub Actions Service Account - Cloud Build Impersonation
-# ============================================================================
-
-# Allow GitHub Actions to impersonate Cloud Build service account
-resource "google_service_account_iam_member" "github_actions_cloudbuild_impersonation" {
-  service_account_id = "projects/${var.project_id}/serviceAccounts/${var.project_number}@cloudbuild.gserviceaccount.com"
-  role               = "roles/iam.serviceAccountTokenCreator"
-  member             = "serviceAccount:${google_service_account.github_actions.email}"
-}
