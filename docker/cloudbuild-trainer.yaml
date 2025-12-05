@@ -4,7 +4,7 @@ steps:
     args:
       - 'build'
       - '-f'
-      - 'docker/Dockerfile'
+      - 'docker/Dockerfile.trainer'
       - '-t'
       - 'us-central1-docker.pkg.dev/lily-demo-ml/churn-pipeline/churn-trainer:latest'
       - '.'
