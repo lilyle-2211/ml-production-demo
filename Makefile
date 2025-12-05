@@ -23,7 +23,7 @@ run:
 	cd trainer && uv run python main.py
 
 build:
-	gcloud builds submit --config docker/cloudbuild-trainer.yaml --project $(PROJECT_ID)
+	gcloud builds submit --config docker/cloudbuild-trainer.yaml --project $(PROJECT_ID) --no-impersonate-service-account
 
 deploy:
 	uv run python pipeline/deploy.py --project-id=$(PROJECT_ID) --region=$(REGION)
