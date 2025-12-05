@@ -1,9 +1,14 @@
-name: CD
+name: CD - Trainer to Vertex AI
 
 on:
   push:
     branches:
       - dev
+    paths:
+      - 'trainer/**'
+      - 'pipeline/**'
+      - 'docker/Dockerfile.trainer'
+      - 'pyproject.toml'
 
 env:
   PROJECT_ID: lily-demo-ml
