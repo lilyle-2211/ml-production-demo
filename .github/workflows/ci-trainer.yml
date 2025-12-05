@@ -11,14 +11,15 @@ on:
       - 'pyproject.toml'
       - '.github/workflows/ci-trainer.yml'
   pull_request:
-    branches: [ main ]
-  workflow_dispatch:  # Allow manual trigger
+    branches:
+      - main
     paths:
       - 'trainer/**'
       - 'tests/test_data_splitting.py'
       - 'tests/test_evaluation.py'
       - 'pyproject.toml'
       - '.github/workflows/ci-trainer.yml'
+  workflow_dispatch:  # manual trigger allowed
 
 jobs:
   test:
@@ -40,7 +41,7 @@ jobs:
       run: uv venv
 
     - name: Install dependencies
-      run: uv pip install -e '.[dev,training]'
+      run: uv pip install -e ".[dev,training]"
 
     - name: Run trainer tests
       run: uv run pytest tests/test_data_splitting.py tests/test_evaluation.py -v --tb=short
