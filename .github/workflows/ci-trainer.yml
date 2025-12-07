@@ -12,13 +12,13 @@ on:
       - '.github/workflows/ci-trainer.yml'
   pull_request:
     branches: [ main ]
-  workflow_dispatch:  # Allow manual trigger
     paths:
       - 'trainer/**'
       - 'tests/test_data_splitting.py'
       - 'tests/test_evaluation.py'
       - 'pyproject.toml'
       - '.github/workflows/ci-trainer.yml'
+  workflow_dispatch:  # Allow manual trigger
 
 jobs:
   test:
