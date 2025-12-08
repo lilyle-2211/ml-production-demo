@@ -1,6 +1,0 @@
-artifact_location: file:///Users/lilyle/Documents/ml-production-demo/trainer/mlruns/954011377355680173
-creation_time: 1764953852951
-experiment_id: '954011377355680173'
-last_update_time: 1764953852951
-lifecycle_stage: active
-name: churn-prediction

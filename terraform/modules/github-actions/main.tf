@@ -1,18 +1,14 @@
-# ============================================================================
-# GitHub Actions - Workload Identity Federation Module
-# ============================================================================
-
 # Create service account for GitHub Actions
 resource "google_service_account" "github_actions" {
   account_id   = var.service_account_id
-  display_name = var.service_account_display_name
-  description  = "Service account for GitHub Actions CI/CD pipeline"
+  display_name = "GitHub Actions"
+  description  = "Service account for GitHub Actions CI/CD"
 }
 
 # Create Workload Identity Pool
 resource "google_iam_workload_identity_pool" "github_pool" {
   workload_identity_pool_id = var.pool_id
-  display_name              = var.pool_display_name
+  display_name              = "GitHub Actions Pool"
   description               = "Workload Identity Pool for GitHub Actions"
 }
 
@@ -20,7 +16,7 @@ resource "google_iam_workload_identity_pool" "github_pool" {
 resource "google_iam_workload_identity_pool_provider" "github_provider" {
   workload_identity_pool_id          = google_iam_workload_identity_pool.github_pool.workload_identity_pool_id
   workload_identity_pool_provider_id = var.provider_id
-  display_name                       = var.provider_display_name
+  display_name                       = "GitHub Provider"
   description                        = "OIDC provider for GitHub Actions"
 
   attribute_mapping = {
@@ -39,7 +35,7 @@ resource "google_iam_workload_identity_pool_provider" "github_provider" {
 
 # Allow GitHub Actions to impersonate the service account
 resource "google_service_account_iam_member" "github_actions_workload_identity" {
-  service_account_id = google_service_account.github_actions.name
+  service_account_id = google_service_account.github_actions.id
   role               = "roles/iam.workloadIdentityUser"
   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_pool.name}/attribute.repository/${var.github_org}/${var.github_repo}"
 }

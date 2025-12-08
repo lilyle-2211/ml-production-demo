@@ -1,0 +1,27 @@
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-f'
+      - 'docker/Dockerfile.inference'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/churn-pipeline/churn-inference:latest'
+      - '.'
+
+  # Push the Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/churn-pipeline/churn-inference:latest'
+
+options:
+  # Use high-CPU machine for faster builds
+  machineType: 'E2_HIGHCPU_8'
+
+# Increase timeout for heavy ML dependencies
+timeout: '1200s'  # 20 minutes
+
+# Images to push (optional, but good for tracking)
+images:
+  - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/churn-pipeline/churn-inference:latest'

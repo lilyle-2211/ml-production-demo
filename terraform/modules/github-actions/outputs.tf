@@ -13,11 +13,6 @@ output "workload_identity_provider" {
   value       = google_iam_workload_identity_pool_provider.github_provider.name
 }
 
-output "workload_identity_pool_id" {
-  description = "ID of the Workload Identity Pool"
-  value       = google_iam_workload_identity_pool.github_pool.workload_identity_pool_id
-}
-
 output "github_secrets_instructions" {
   description = "Instructions for setting up GitHub secrets"
   value       = <<-EOT

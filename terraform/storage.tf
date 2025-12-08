@@ -36,3 +36,13 @@ resource "google_storage_bucket" "pipeline_bucket" {
 
   depends_on = [google_project_service.required_apis]
 }
+
+# Grant Cloud Build service account permission to push to Artifact Registry
+resource "google_artifact_registry_repository_iam_member" "cloudbuild_repo_writer" {
+  location   = var.region
+  repository = google_artifact_registry_repository.churn_pipeline.name
+  role       = "roles/artifactregistry.writer"
+  member     = "serviceAccount:${var.project_number}@cloudbuild.gserviceaccount.com"
+
+  depends_on = [google_artifact_registry_repository.churn_pipeline]
+}

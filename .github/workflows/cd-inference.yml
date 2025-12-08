@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
+      id-token: write  # Required for Workload Identity Federation
 
     steps:
       - name: Checkout
@@ -35,6 +35,9 @@ jobs:
         with:
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          token_format: access_token
+          create_credentials_file: true
+          cleanup_credentials: true
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
@@ -50,7 +53,7 @@ jobs:
             --project=${{ env.PROJECT_ID }}
 
       - name: Build and push Docker image
-        run: make push-inference
+        run: make push-inference-cloudbuild
         env:
           PROJECT_ID: ${{ env.PROJECT_ID }}
           REGION: ${{ env.REGION }}

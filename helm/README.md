@@ -1,104 +1,106 @@
-# Helm Deployment Guide
+# Helm Chart - ML Inference Service
 
-## Overview
+Simple Helm chart for deploying the churn prediction inference service to GKE.
 
-The churn prediction inference service is deployed to GKE using Helm for simplified Kubernetes resource management.
-
-## Prerequisites
-
-- **GKE cluster**: `fastapi-cluster` (us-central1-a)
-- **Artifact Registry**: `churn-pipeline` (us-central1)
-- **Cloud Storage**: `lily-demo-ml-pipeline`
-- kubectl configured with cluster access
-- Helm 3.x installed
-- Docker image pushed to Artifact Registry
-
-## Chart Structure
+## Structure
 
 ```
 helm/
-├── Chart.yaml              # Chart metadata
-├── values.yaml             # Configuration values
-└── templates/
-    ├── deployment.yaml     # Pod deployment spec
-    ├── service.yaml        # LoadBalancer service
-    └── serviceaccount.yaml # Workload Identity SA
+├── Chart.yaml           # Chart metadata
+├── values.yaml          # Configuration values
+├── .helmignore         # Files to ignore
+├── templates/          # Kubernetes resources
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   ├── hpa.yaml
+│   └── serviceaccount.yaml
+└── README.md
+```
+
+## Prerequisites
+
+- GKE cluster with Workload Identity (provisioned by Terraform)
+- Artifact Registry repository (provisioned by Terraform)
+- Service Account with proper IAM roles (provisioned by Terraform)
+- Helm 3.x installed
+
+## Quick Start
+
+```bash
+# Get cluster credentials
+gcloud container clusters get-credentials fastapi-cluster \
+  --zone=us-central1-a --project=lily-demo-ml
+
+# Deploy
+helm install churn-inference ./helm --wait
+
+# Upgrade
+helm upgrade churn-inference ./helm --wait
+
+# Check status
+kubectl get pods,svc -l app.kubernetes.io/name=churn-inference
+
+# Get external IP
+kubectl get svc churn-inference -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
 ```
 
 ## Configuration
 
-Key values in `helm/values.yaml`:
+Key settings in `values.yaml`:
 
-- `replicaCount`: Number of pod replicas (default: 2)
-- `image.repository`: Full Artifact Registry path
-- `image.tag`: Docker image tag
-- `service.type`: LoadBalancer for external access
-- `resources`: CPU/memory limits and requests
-- `serviceAccount`: Workload Identity annotation
+| Setting | Description | Default |
+|---------|-------------|---------|
+| `replicaCount` | Number of pod replicas | `2` |
+| `image.repository` | Container image repository | `us-central1-docker.pkg.dev/lily-demo-ml/churn-pipeline/churn-inference` |
+| `image.tag` | Container image tag | `"latest"` |
+| `service.type` | Kubernetes service type | `LoadBalancer` |
+| `autoscaling.enabled` | Enable horizontal pod autoscaling | `true` |
 
-## Deployment Commands
+## Autoscaling
 
-### Install
-```bash
-make helm-install
-# or
-helm install churn-inference ./helm
+Configured for 2-10 replicas based on CPU (70%) and memory (80%) usage.
+
+## Workload Identity
+
+Service account automatically configured with:
+```yaml
+annotations:
+  iam.gke.io/gcp-service-account: churn-inference@lily-demo-ml.iam.gserviceaccount.com
 ```
 
-### Upgrade (after model changes)
+## Health Checks
+
+- **Liveness**: `/health` endpoint (restarts unhealthy pods)
+- **Readiness**: `/health` endpoint (removes unready pods from load balancer)
+
+## Makefile Integration
+
+Use project Makefile commands:
 ```bash
-make helm-upgrade
-# or
-helm upgrade churn-inference ./helm
+make helm-upgrade    # Deploy/upgrade
+make helm-status     # Check status
+make helm-uninstall  # Remove
+make test-gke        # Test endpoints
 ```
-
-### Status
-```bash
-make helm-status
-# or
-helm status churn-inference
-```
-
-### Uninstall
-```bash
-make helm-uninstall
-# or
-helm uninstall churn-inference
-```
-
-## Accessing the Service
-
-After deployment, get the external IP:
-```bash
-kubectl get service churn-inference
-```
-
-Endpoints:
-- Health: `http://<EXTERNAL-IP>/health`
-- Docs: `http://<EXTERNAL-IP>/docs`
-- Predict: `http://<EXTERNAL-IP>/predict`
-
-## Updating the Model
-
-1. Train and upload new model to GCS bucket
-2. Rebuild Docker image with new tag
-3. Update `helm/values.yaml` with new image tag
-4. Run `make helm-upgrade` to restart pods with new model
 
 ## Troubleshooting
 
-View pod logs:
 ```bash
-kubectl logs -l app=churn-inference
-```
+# Check pod logs
+kubectl logs -l app.kubernetes.io/name=churn-inference -f
 
-Describe resources:
-```bash
+# Describe deployment
 kubectl describe deployment churn-inference
-kubectl describe service churn-inference
+
+# Check events
+kubectl get events --field-selector type=Warning
+
+# Validate templates locally
+helm template churn-inference ./helm
 ```
 
-Validate templates locally:
+## Cleanup
+
 ```bash
-helm template churn-inference ./helm
+helm uninstall churn-inference
 ```

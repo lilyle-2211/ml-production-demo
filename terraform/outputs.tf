@@ -18,7 +18,7 @@ output "region" {
   value       = var.region
 }
 
-# GitHub Actions Workload Identity outputs
+# GitHub Actions Workload Identity Federation outputs
 output "github_actions_service_account" {
   description = "GitHub Actions service account email"
   value       = module.github_actions.service_account_email
