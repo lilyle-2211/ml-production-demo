@@ -29,6 +29,7 @@ push-inference-cloudbuild:
 		.
 
 helm-upgrade:
+	kubectl delete deployment churn-inference --ignore-not-found
 	helm upgrade churn-inference ./helm --install --wait --timeout=5m
 
 helm-status:
