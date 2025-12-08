@@ -52,8 +52,12 @@ jobs:
             --zone=${{ env.GKE_ZONE }} \
             --project=${{ env.PROJECT_ID }}
 
-      - name: Build and push Docker image
-        run: make push-inference-cloudbuild
+      - name: Build and push Docker image (Cloud Build)
+        run: |
+          # Submit build; output contains console link
+          gcloud builds submit --config docker/cloudbuild.yaml --substitutions _PROJECT_ID=${{ env.PROJECT_ID }},_REGION=${{ env.REGION }} . | tee build_output.txt
+          # Print Cloud Build console link to the job log for manual inspection
+          grep -oE 'https://console.cloud.google.com/cloud-build/builds/[a-z0-9-]+' build_output.txt || true
         env:
           PROJECT_ID: ${{ env.PROJECT_ID }}
           REGION: ${{ env.REGION }}
